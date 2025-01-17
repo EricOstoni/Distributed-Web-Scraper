@@ -6,6 +6,7 @@ class IphoneSpider(scrapy.Spider):
     start_urls= [
         "https://www.nabava.net/mobiteli?se=1&cod=&cdo="
     ]
+    
 
     def parse(self, response):
 
@@ -15,11 +16,14 @@ class IphoneSpider(scrapy.Spider):
 
             name = product.css(".product-title::text").get() 
             price = product.css(".product__price::text").get()
+            link = product.css('a').attrib['href']
+
 
             yield{
 
                 "name" : name.strip() if name else None,
                 "price" : price.strip() if price else None,
+                "link" : "https://www.nabava.net" + link.strip() if link else None,
 
             }
         next_page = response.css("a.next-page::attr(href)").get()
