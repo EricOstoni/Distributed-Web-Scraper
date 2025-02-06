@@ -1,10 +1,10 @@
 import scrapy
 
-class IphoneSpider(scrapy.Spider): 
-    name = "iphone_spider"
+class MacSpider(scrapy.Spider): 
+    name = "mac_spider"
     allowed_domains = ["nabava.net"]
     start_urls= [
-        "https://www.nabava.net/mobiteli?se=1&cod=&cdo="
+        "https://www.nabava.net/apple-mac"
     ]
     
 
