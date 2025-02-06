@@ -17,7 +17,7 @@ services:
    ports:
     - "8080:8080"
    environment:
-     AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
-     AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
+     AWS_ACCESS_KEY_ID: 'test'
+     AWS_SECRET_ACCESS_KEY: 'test'
    command:
-     dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region us-west-2
+     dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region test
