@@ -1,3 +1,4 @@
+import uuid
 import scrapy
 
 class MacbookSpider(scrapy.Spider): 
@@ -20,7 +21,8 @@ class MacbookSpider(scrapy.Spider):
 
 
             yield{
-
+                "id" : str(uuid.uuid4()),
+                "category" : "Macbook",
                 "name" : name.strip() if name else None,
                 "price" : price.strip() if price else None,
                 "link" : "https://www.nabava.net" + link.strip() if link else None,
