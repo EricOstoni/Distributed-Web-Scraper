@@ -1,35 +1,41 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-
-# useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
 import boto3
-from botocore.exceptions import ClientError
+import uuid
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-class WebscraperPipeline:
-    def process_item(self, item, spider):
-        return item
-    
-    
-#TODO izmjeniti ime tablice i mozda napraviti .env file
-
-class DynamodbPipeline: 
+class DynamoDBPipeline:
     def __init__(self):
-        self.dynamodb = boto3.resource("dynamodb" , region_name="croatia") 
-        self.table = self.dynamodb.Table("table") 
+        self.dynamodb = boto3.resource(
+            'dynamodb',
+            endpoint_url=os.getenv("DYNAMODB_ENDPOINT"),
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            region_name=os.getenv("AWS_REGION")
+        )
+        self.table_name = "Products"
 
-    def process_item(self, item, spider): 
-        try: 
-            self.table.put_item(Item={
-                "name" : item.get("name", ""),
-                "price": item.get("price", "")
-            })
-        except ClientError as e:
-            spider.logger.error(f"Error saveing item to database: {e.response['Error']['Message']}")
+        existing_tables = self.dynamodb.meta.client.list_tables()["TableNames"]
+        if self.table_name not in existing_tables:
+            self.table = self.dynamodb.create_table(
+                TableName=self.table_name,
+                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
+                AttributeDefinitions=[{"AttributeName": "id", "AttributeType": "S"}],
+                ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
+            )
+            self.table.wait_until_exists()
+        else:
+            self.table = self.dynamodb.Table(self.table_name)
+
+    def process_item(self, item, spider):
+        item["id"] = str(uuid.uuid4())  
+        category_map = {
+            "iphone_spider": "iPhone",
+            "mac_spider": "Mac",
+            "macbook_spider": "MacBook"
+        }
+        item["category"] = category_map.get(spider.name, "bo")
+        self.table.put_item(Item=dict(item))
         return item
-    
-    
+
