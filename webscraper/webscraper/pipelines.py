@@ -39,3 +39,4 @@ class DynamoDBPipeline:
         self.table.put_item(Item=dict(item))
         return item
 
+
