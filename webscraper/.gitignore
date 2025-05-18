@@ -178,7 +178,9 @@ pyrightconfig.json
 
 docker/
 
-
+#files
+*.json
+!spec/*.json
 
 
 # End of https://www.toptal.com/developers/gitignore/api/python
