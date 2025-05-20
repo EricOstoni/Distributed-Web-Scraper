@@ -1,24 +1,108 @@
 version: '3.8'
+
 services:
- dynamodb-local:
-   command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-   image: "amazon/dynamodb-local:latest"
-   container_name: aws-test-1
-   ports:
-     - "8000:8000"
-   volumes:
-     - "./docker/dynamodb:/home/dynamodblocal/data"
-   working_dir: /home/dynamodblocal
-   
-#  app-node:
-#    depends_on:
-#      - dynamodb-local
-#    image: amazon/aws-cli
-#    container_name: app-node
-#    ports:
-#     - "8080:8080"
-#    environment:
-#      AWS_ACCESS_KEY_ID: 'test'
-#      AWS_SECRET_ACCESS_KEY: 'test'
-#    command:
-#      dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region test
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    ports:
+      - "8000:8000"
+    networks:
+      - webscraper-net
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+
+  iphone_spider:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iphone_spider
+    networks:
+      - webscraper-net
+    depends_on:
+      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+      AWS_REGION: "eu-central-1"
+      DYNAMODB_ENDPOINT: "http://dynamodb:8000"
+    volumes:
+      - "./output:/app/output"
+    command: scrapy crawl iphone_spider -o output/iphone.json
+
+  mac_spider:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mac_spider
+    networks:
+      - webscraper-net
+    depends_on:
+      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+      AWS_REGION: "eu-central-1"
+      DYNAMODB_ENDPOINT: "http://dynamodb:8000"
+    volumes:
+      - "./output:/app/output"
+    command: scrapy crawl mac_spider -o output/mac.json
+
+  macbook_spider:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: macbook_spider
+    networks:
+      - webscraper-net
+    depends_on:
+      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+      AWS_REGION: "eu-central-1"
+      DYNAMODB_ENDPOINT: "http://dynamodb:8000"
+    volumes:
+      - "./output:/app/output"
+    command: scrapy crawl macbook_spider -o output/macbook.json
+
+  ipad_spider:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ipad_spider
+    networks:
+      - webscraper-net
+    depends_on:
+      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+      AWS_REGION: "eu-central-1"
+      DYNAMODB_ENDPOINT: "http://dynamodb:8000"
+    volumes:
+      - "./output:/app/output"
+    command: scrapy crawl ipad_spider -o output/ipad.json
+
+  iwatch_spider:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iwatch_spider
+    networks:
+      - webscraper-net
+    depends_on:
+      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: "local"
+      AWS_SECRET_ACCESS_KEY: "local"
+      AWS_REGION: "eu-central-1"
+      DYNAMODB_ENDPOINT: "http://dynamodb:8000"
+    volumes:
+      - "./output:/app/output"
+    command: scrapy crawl iwatch_spider -o output/watch.json
+
+networks:
+  webscraper-net:
+    driver: bridge
