@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watch-spider
+  namespace: webscraper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watch-spider
+  template:
+    metadata:
+      labels:
+        app: watch-spider
+    spec:
+      containers:
+        - name: watch-spider
+          image: webscraper:v1
+          command: ["scrapy", "crawl", "iwatch_spider"]
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: "local"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "local"
+            - name: AWS_REGION
+              value: "eu-central-1"
+            - name: DYNAMODB_ENDPOINT
+              value: "http://dynamodb.webscraper:8000"
