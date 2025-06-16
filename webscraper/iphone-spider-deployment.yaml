@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: iphone-spider
-          image: webscraper:v1
+          image: gcr.io/webscraper-gke/webscraper:v1
           command: ["scrapy", "crawl", "iphone_spider"]
           env:
             - name: AWS_ACCESS_KEY_ID

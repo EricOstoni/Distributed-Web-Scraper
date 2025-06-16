@@ -13,12 +13,15 @@ AWS_REGION = os.getenv("AWS_REGION")
 DYNAMODB_ENDPOINT = os.getenv("DYNAMODB_ENDPOINT")
 TABLE_NAME = os.getenv("TABLE_NAME")
 
-app = FastAPI()
+# app = FastAPI()
+app = FastAPI(root_path="/api")
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    # allow_origins=["http://localhost:5173"],
+    # allow_origins=["*"],
+    allow_origins=["http://34.102.218.251"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
@@ -34,6 +37,11 @@ dynamodb = boto3.resource(
 )
 
 table = dynamodb.Table(TABLE_NAME)
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Backend API is running."}
 
 
 @app.get("/products")

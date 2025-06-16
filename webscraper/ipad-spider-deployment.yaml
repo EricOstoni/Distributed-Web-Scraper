@@ -15,7 +15,9 @@ spec:
     spec:
       containers:
         - name: ipad-spider
-          image: webscraper:v1
+          # image: webscraper:v1
+          image: gcr.io/webscraper-gke/webscraper:v1
+
           command: ["scrapy", "crawl", "ipad_spider"]
           env:
             - name: AWS_ACCESS_KEY_ID
@@ -25,4 +27,4 @@ spec:
             - name: AWS_REGION
               value: "eu-central-1"
             - name: DYNAMODB_ENDPOINT
-              value: "http://dynamodb.webscraper:8000"
+              value: "http://dynamodb:8000"
