@@ -15,8 +15,9 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: webscraper-frontend:latest
-          imagePullPolicy: Never
+          # image: webscraper-frontend:latest # for minikube
+          image: gcr.io/webscraper-gke/webscraper-frontend:latest
+          # imagePullPolicy: Never #only for minikube
           ports:
             - containerPort: 80
 ---
