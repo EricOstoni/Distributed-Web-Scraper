@@ -15,8 +15,9 @@ spec:
     spec:
       containers:
         - name: backend
-          image: webscraper-backend:latest
-          imagePullPolicy: Never
+          # image: webscraper-backend:latest  minikube
+          image: gcr.io/webscraper-gke/webscraper-backend:latest
+          # imagePullPolicy: Never  # only for minikube
           ports:
             - containerPort: 8000
           env:
@@ -27,7 +28,7 @@ spec:
             - name: AWS_REGION
               value: "eu-central-1"
             - name: DYNAMODB_ENDPOINT
-              value: "http://dynamodb.webscraper:8000"
+              value: "http://dynamodb:8000"
             - name: TABLE_NAME
               value: "Products"
 ---

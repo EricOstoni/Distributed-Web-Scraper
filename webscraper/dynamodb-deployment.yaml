@@ -16,9 +16,23 @@ spec:
       containers:
         - name: dynamodb
           image: amazon/dynamodb-local
-          command: ["java", "-jar", "DynamoDBLocal.jar", "-sharedDb"]
+          command:
+            [
+              "java",
+              "-jar",
+              "DynamoDBLocal.jar",
+              "-sharedDb",
+              "-dbPath",
+              "/home/dynamodblocal/data",
+            ]
           ports:
             - containerPort: 8000
+          volumeMounts:
+            - name: dynamodb-storage
+              mountPath: /home/dynamodblocal/data
+      volumes:
+        - name: dynamodb-storage
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
