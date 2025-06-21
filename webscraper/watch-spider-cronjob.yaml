@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: watch-spider
+  namespace: webscraper
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: spider
+              image: gcr.io/webscraper-gke/webscraper:v1
+              command: ["scrapy", "crawl", "iwatch_spider"]
+              env: &env_common
+                - name: AWS_ACCESS_KEY_ID
+                  value: "local"
+                - name: AWS_SECRET_ACCESS_KEY
+                  value: "local"
+                - name: AWS_REGION
+                  value: "eu-central-1"
+                - name: DYNAMODB_ENDPOINT
+                  value: "http://dynamodb:8000"
+          restartPolicy: OnFailure
