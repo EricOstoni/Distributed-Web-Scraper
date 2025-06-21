@@ -1,8 +1,11 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import boto3
 import os
 from dotenv import load_dotenv
+import redis
+import json
 
 
 load_dotenv()
@@ -38,6 +41,8 @@ dynamodb = boto3.resource(
 
 table = dynamodb.Table(TABLE_NAME)
 
+r = redis.Redis(host="redis", port=6379, decode_responses=True)
+
 
 @app.get("/")
 def read_root():
@@ -46,6 +51,15 @@ def read_root():
 
 @app.get("/products")
 def get_products():
-    response = table.scan()
-    items = response.get("Items", [])
-    return items
+    cache = r.get("products")
+    if cache:
+        print("imam cache")
+        return JSONResponse(content=json.loads(cache))
+    else:
+        print("nemam cache")
+        response = table.scan()
+        items = response.get("Items", [])
+
+        r.set("products", json.dumps(items), ex=300)
+
+        return JSONResponse(content=items)
