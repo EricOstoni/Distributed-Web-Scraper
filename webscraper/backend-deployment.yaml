@@ -4,7 +4,7 @@ metadata:
   name: backend
   namespace: webscraper
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend
@@ -15,9 +15,7 @@ spec:
     spec:
       containers:
         - name: backend
-          # image: webscraper-backend:latest  minikube
           image: gcr.io/webscraper-gke/webscraper-backend:latest
-          # imagePullPolicy: Never  # only for minikube
           ports:
             - containerPort: 8000
           env:
@@ -31,6 +29,13 @@ spec:
               value: "http://dynamodb:8000"
             - name: TABLE_NAME
               value: "Products"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
 ---
 apiVersion: v1
 kind: Service
