@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spider-worker
+  namespace: webscraper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spider-worker
+  template:
+    metadata:
+      labels:
+        app: spider-worker
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: spider-worker
+          image: gcr.io/webscraper-gke/spider-worker:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: "local"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "local"
+            - name: AWS_REGION
+              value: "eu-central-1"
+            - name: DYNAMODB_ENDPOINT
+              value: "http://dynamodb.webscraper:8000"
