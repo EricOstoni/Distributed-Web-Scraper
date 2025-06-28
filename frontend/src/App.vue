@@ -37,6 +37,8 @@ const search = ref("")
 
 onMounted(async () => {
   try {
+
+    
     // const response = await fetch("http://127.0.0.1:8000/products"); 
     const response = await fetch("/api/products");
 

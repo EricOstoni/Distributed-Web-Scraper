@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.background import BackgroundTasks
 import boto3
 import os
 from dotenv import load_dotenv
 import redis
 import json
+from task import q, run_spider_task
 
 
 load_dotenv()
@@ -57,9 +59,16 @@ def get_products():
         return JSONResponse(content=json.loads(cache))
     else:
         print("nemam cache")
+
         response = table.scan()
         items = response.get("Items", [])
 
         r.set("products", json.dumps(items), ex=300)
 
         return JSONResponse(content=items)
+
+
+@app.post("/run-spider/{spider_name}")
+async def run_spider(spider_name: str, background_tasks: BackgroundTasks):
+    job = q.enqueue(run_spider_task, spider_name)
+    return {"message": f"Task za {spider_name} enqueue-an", "job_id": job.id}
