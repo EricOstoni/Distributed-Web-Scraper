@@ -2,6 +2,11 @@
 
 Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac, MacBook, iPad, Watch) s više izvora. Sustav podržava pametno prepoznavanje kategorija, raspoređivanje scraping poslova putem task queuea (Redis + RQ), Redis cache, paralelno izvršavanje spidera i orkestraciju putem Kubernetes-a (Google Kubernetes Engine - GKE).
 
+Projekt je započeo lokalno, korištenjem Minikube za testiranje Kubernetes klastera i YAML konfiguracija.
+Kako bi aplikacija bila dostupna javno, sustav je prebačen na Google Kubernetes Engine (GKE) — besplatni tier. GKE omogućuje bolje automatsko izlaganje servisa putem Ingressa i pristup sustavu izvana. I ako besplatni tier nije dopusto toliku scalabilnost i korištenja resursa, da je plaćena verzija imali bi više resursa na raspolaganju.
+
+- Url : http://34.102.218.251/
+
 ---
 
 ## 🔧 Tehnologije
@@ -19,6 +24,8 @@ Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac,
 ## 🧱 Arhitektura
 
 ![img](./arhitektura_rs.png)
+
+- slika izrađena s alatom [Eraser](https://app.eraser.io/)
 
 ---
 
@@ -128,3 +135,14 @@ Fakultet informatike u Puli
 Raspodijeljeni sustavi, ak.god. 2024./2025. Mentor: Nikola Tanković (https://fipu.unipu.hr/fipu/nikola.tankovic, nikola.tankovic@unipu.hr)
 
 ---
+
+## Literatura
+
+- https://fastapi.tiangolo.com
+- https://docs.scrapy.org/en/latest/
+- https://www.geeksforgeeks.org/system-design/redis-cache/
+- https://docs.aws.amazon.com/dynamodb/
+- https://kubernetes.io/docs/tutorials/hello-minikube/
+- https://cloud.google.com/learn/what-is-kubernetes?hl=en
+- https://docs.docker.com/compose/
+- https://www.geeksforgeeks.org/computer-networks/what-is-a-distributed-system/
