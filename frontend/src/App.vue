@@ -1,20 +1,20 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
   <div class="container">
-    <h1> Scraped Apple Products 💻 </h1>
+    <h1>Scraped Apple Products 💻</h1>
 
     <input
       v-model="search"
-      placeholder="Search products..."
+      placeholder="Upiši proizvod i pritisni Enter..."
       class="search"
+      @keyup.enter="handleSearch"
     />
 
-    <div v-if="loading">Loading products...</div>
+    <div v-if="loading">Učitavam...</div>
+    <div v-if="statusMsg && !loading">{{ statusMsg }}</div>
 
-    <div v-else>
+    <div v-if="!loading && products.length > 0">
       <div
         v-for="product in filteredProducts"
         :key="product.id"
@@ -29,32 +29,57 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from "vue";
 
-const products = ref([])
-const loading = ref(true)
-const search = ref("")
+const products = ref([]);
+const loading = ref(false);
+const search = ref("");
+const statusMsg = ref("");
 
-onMounted(async () => {
+const handleSearch = async () => {
+  const keyword = search.value.trim();
+  if (!keyword) return;
+
+  loading.value = true;
+  statusMsg.value = "Pokrećem scraper za: " + keyword;
+
   try {
+    const res = await fetch(`/api/scraper?keyword=${keyword}`, {
+      method: "POST",
+    });
+    const data = await res.json();
+    console.log("Scraper pokrenut:", data.message);
 
-    
-    // const response = await fetch("http://127.0.0.1:8000/products"); 
-    const response = await fetch("/api/products");
-
-    products.value = await response.json(); 
+    setTimeout(async () => {
+      await loadProducts(keyword);
+    }, 5000);
   } catch (err) {
-    console.error("Failed to load products:", err)
-  } finally {
-    loading.value = false
+    console.error("Greška:", err);
+    statusMsg.value = "Došlo je do greške.";
+    loading.value = false;
   }
-})
+  cd;
+};
+
+const loadProducts = async (category) => {
+  try {
+    const url = `/api/products?category=${category}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    products.value = data;
+    statusMsg.value = `Nađeno ${data.length} proizvoda za "${category}".`;
+  } catch (err) {
+    console.error("Greška kod dohvaćanja proizvoda:", err);
+    statusMsg.value = "Greška kod dohvaćanja proizvoda.";
+  } finally {
+    loading.value = false;
+  }
+};
 
 const filteredProducts = computed(() => {
-  return products.value.filter((p) =>
-    p.name?.toLowerCase().includes(search.value.toLowerCase())
-  )
-})
+  const keyword = search.value.toLowerCase();
+  return products.value.filter((p) => p.name?.toLowerCase().includes(keyword));
+});
 </script>
 
 <style scoped>
@@ -65,11 +90,8 @@ const filteredProducts = computed(() => {
   font-family: sans-serif;
 }
 
-.container h3{
-  color: black;
-}
-
-.container p{
+.container h3,
+.container p {
   color: black;
 }
 
@@ -88,4 +110,3 @@ const filteredProducts = computed(() => {
   background: #f9f9f9;
 }
 </style>
-
