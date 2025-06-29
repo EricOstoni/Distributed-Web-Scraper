@@ -1,6 +1,6 @@
 # 📦 Distributed Apple Web Scraper
 
-Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac, MacBook, iPad, Watch) s više izvora. Sustav podržava pametno prepoznavanje kategorija, raspoređivanje scraping poslova putem task queuea (Redis + RQ), keširanje, paralelno izvršavanje spidera i orkestraciju putem Kubernetes-a (Google Kubernetes Engine - GKE).
+Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac, MacBook, iPad, Watch) s više izvora. Sustav podržava pametno prepoznavanje kategorija, raspoređivanje scraping poslova putem task queuea (Redis + RQ), Redis cache, paralelno izvršavanje spidera i orkestraciju putem Kubernetes-a (Google Kubernetes Engine - GKE).
 
 ---
 
@@ -8,7 +8,7 @@ Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac,
 
 - **FastAPI** – REST backend za upravljanje scraping zahtjevima i dohvat podataka
 - **Scrapy** – scraper framework za dohvat podataka s weba
-- **Redis + RQ (Redis Queue)** – task queue za raspodjelu scraping poslova i keširanje
+- **Redis + RQ (Redis Queue)** – task queue za raspodjelu scraping poslova i cache
 - **DynamoDB (local)** – NoSQL baza za pohranu podataka o proizvodima
 - **Vue.js** – jednostavan frontend za pretraživanje i prikaz proizvoda
 - **Kubernetes (GKE)** – kontejnera i skalabilnost, horizontalno skaliranje i cron scraping
@@ -18,7 +18,7 @@ Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac,
 
 ## 🧱 Arhitektura
 
-![img](arhitektura_rs.png)
+![img](./arhitektura_rs.png)
 
 ---
 
