@@ -6,7 +6,7 @@ from ..items import WebscraperItem
 class MacbookSpider(scrapy.Spider):
     name = "macbook_spider"
     allowed_domains = ["nabava.net"]
-    start_urls = ["https://www.nabava.net/prijenosna-racunala?se=1&q=macbook&cod=&cdo="]
+    start_urls = ["https://www.nabava.net/prijenosna-racunala/apple?se=1"]
 
     def parse(self, response):
 
