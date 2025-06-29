@@ -72,6 +72,44 @@ Korištenjem fuzzy matching algoritma, backend prepoznaje najsličniju kategorij
 
 ---
 
+## 📈 Testiranje performansi (k6)
+
+Sustav je load-testiran pomoću [k6](https://k6.io/) s ciljem testiranja skalabilnosti i latencije FastAPI backend servisa (`POST /scraper` endpoint).
+
+### ✅ Konfiguracija
+
+- **Trajanje testa:** 3 minute
+- **Virtualni korisnici (VUs):** do 1000
+- **Cilj:** 100,000 zahtjeva prema `/scraper`
+
+### 📊 Rezultati
+
+| Metrika                   | Vrijednost         |
+| ------------------------- | ------------------ |
+| Ukupno zahtjeva           | `101,898`          |
+| Uspješni zahtjevi (`200`) | `100,822` (98.94%) |
+| Neuspješni zahtjevi       | `1,076` (1.05%)    |
+| Prosječno trajanje        | `1.1s`             |
+| p95 trajanje              | `3.24s`            |
+| Maksimalno trajanje       | `7.74s`            |
+
+### ❌ Prekoračeni pragovi
+
+| Prag                             | Status   | Vrijednost |
+| -------------------------------- | -------- | ---------- |
+| `http_req_duration p(95)<3000ms` | ✗ Failed | `3.24s`    |
+| `http_req_failed rate<0.01`      | ✗ Failed | `1.05%`    |
+
+## 📉 Analiza rezultata
+
+Tijekom 3-minutnog opterećenja s 1000 paralelnih korisnika, sustav je uspješno obradio gotovo 99% zahtjeva, no dva zadana praga nisu zadovoljena:
+
+- p(95) < 3000ms nije postignuto, jer 5% zahtjeva premašuje 3 sekunde.
+
+- Stopa pogrešaka (http_req_failed) veća je od 1%, zbog prekoračenja timeout-a i opterećenja nad bazom.
+
+---
+
 ## 📌 TODO (daljnje nadogradnje)
 
 - [ ] Koristi scrapy-ai umjesto klasičnog
@@ -80,10 +118,6 @@ Korištenjem fuzzy matching algoritma, backend prepoznaje najsličniju kategorij
 - [ ] Dodavanje još izvora
 - [ ] Koristi plaćenu verziju google clouda
 - [ ] Koristiti plaćenu bazu
-
----
-
-## 🧑‍💻 Pokretanje lokalno
 
 ---
 
