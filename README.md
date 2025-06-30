@@ -5,7 +5,7 @@ Distribuirani sustav za automatski scraping cijena Apple proizvoda (iPhone, Mac,
 Projekt je započeo lokalno, korištenjem Minikube za testiranje Kubernetes klastera i YAML konfiguracija.
 Kako bi aplikacija bila dostupna javno, sustav je prebačen na Google Kubernetes Engine (GKE) — besplatni tier. GKE omogućuje bolje automatsko izlaganje servisa putem Ingressa i pristup sustavu izvana. I ako besplatni tier nije dopusto toliku scalabilnost i korištenja resursa, da je plaćena verzija imali bi više resursa na raspolaganju.
 
-- Url : http://34.102.218.251/
+
 
 ---
 
